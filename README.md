@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:3000. Set the same `NEXT_PUBLIC_SUPABASE_*` values in the Vercel project after you connect Vercel, then deploy.
+Open http://127.0.0.1:3000. Production uses the 1xlblaze Supabase project by default; override with `NEXT_PUBLIC_SUPABASE_*` in Vercel if you switch databases.
 
 Hourly refresh is configured as a Vercel Cron hitting `GET /api/collect`.
 
