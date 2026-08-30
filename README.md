@@ -12,7 +12,7 @@ Jobwire does **not** log in, reuse cookies, or auto-apply. With an `APIFY_TOKEN`
 
 Apify MCP in Cursor Desktop can run the same actors interactively. This cloud agent cannot complete Apify OAuth; put the token in `.env.local` / Vercel env instead.
 
-Hourly Vercel Cron only refreshes the free public feeds so Apify usage stays on-demand.
+Daily Vercel Cron (Hobby allows once per day) refreshes the free public feeds. Pull the wire still collects on demand, including Apify when `APIFY_TOKEN` is set.
 
 ## Web app (Vercel)
 
@@ -24,7 +24,7 @@ npm run dev
 
 Open http://127.0.0.1:3000. Production uses the 1xlblaze Supabase project by default; override with `NEXT_PUBLIC_SUPABASE_*` in Vercel if you switch databases.
 
-Hourly refresh is configured as a Vercel Cron hitting `GET /api/collect`.
+A daily Vercel Cron hits `GET /api/collect` (Hobby cannot schedule hourly jobs).
 
 ## Local Python CLI (optional)
 
