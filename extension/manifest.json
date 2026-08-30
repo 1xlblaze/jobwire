@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Jobwire Suggest",
+  "version": "1.0.0",
+  "description": "Adds a Suggest Answer button on job application forms. Drafts come from your local Jobwire profile. Never submits the form.",
+  "action": {
+    "default_title": "Jobwire Suggest",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "http://127.0.0.1:43141/*",
+    "http://localhost:43141/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

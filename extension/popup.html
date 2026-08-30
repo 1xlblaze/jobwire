@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Jobwire Suggest</title>
+    <style>
+      body {
+        font-family: Georgia, serif;
+        width: 280px;
+        margin: 0;
+        padding: 14px 16px 16px;
+        background: #f3ead8;
+        color: #1b1712;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0 0 6px;
+      }
+      p {
+        font-size: 13px;
+        line-height: 1.4;
+        margin: 0 0 10px;
+      }
+      label {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 4px;
+      }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 8px;
+        border: 1px solid #1b1712;
+        background: #fffaf0;
+        margin-bottom: 10px;
+      }
+      button {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #1b1712;
+        background: #1b1712;
+        color: #f3ead8;
+        cursor: pointer;
+      }
+      #status {
+        margin-top: 8px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Jobwire Suggest</h1>
+    <p>
+      Suggests screening answers from your local Jobwire server. It never clicks
+      Apply or submits a form.
+    </p>
+    <label for="api">Local API</label>
+    <input id="api" value="http://127.0.0.1:43141" />
+    <button id="save" type="button">Save &amp; ping</button>
+    <div id="status"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>

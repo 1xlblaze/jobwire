@@ -1,0 +1,64 @@
+agent:
+  polling_interval_minutes: 60
+  lookback_hours: 24
+  host: "127.0.0.1"
+  port: 43141
+
+search:
+  keywords:
+    - python
+    - django
+    - fastapi
+    - flask
+  title_hints:
+    - Python Developer
+    - Backend Engineer
+    - Backend Developer
+    - Software Engineer
+  sources:
+    - remoteok
+    - remotive
+    - arbeitnow
+    - jobicy
+    - weworkremotely
+
+candidate:
+  first_name: "Alex"
+  last_name: "Rao"
+  email: "alex.rao@example.com"
+  phone_country_code: "+91"
+  phone_number: "9876543210"
+  location: "Bangalore, India"
+  experience_years: 4
+  notice_period_days: 15
+  current_ctc_lpa: 14.0
+  expected_ctc_lpa: 20.0
+  education_degree: "Bachelor of Technology in Computer Science"
+  summary: >
+    Backend engineer focused on Python APIs, data stores, and cloud-native
+    delivery. Recently led a FastAPI platform that cut p95 latency 40% and
+    shipped Kubernetes-based deploys on AWS.
+  skills:
+    Python: 4
+    FastAPI: 3
+    Django: 3
+    PostgreSQL: 3
+    Docker: 3
+    Kubernetes: 2
+    AWS: 3
+    Redis: 2
+    pytest: 3
+  github: "https://github.com/example"
+  linkedin: "https://www.linkedin.com/in/example"
+  website: "https://example.dev"
+  work_authorization: "Yes — authorized to work in India."
+  requires_sponsorship: false
+  willing_to_relocate: false
+  remote_preference: "Remote-first; hybrid in Bangalore is fine."
+  employment_type: "Full-time"
+  resume_path: "resume.txt"
+
+llm:
+  provider: "auto"   # auto | openai | gemini | none
+  model: ""
+  max_words: 75

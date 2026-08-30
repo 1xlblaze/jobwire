@@ -1,0 +1,26 @@
+Alex Rao
+Backend Engineer · Bangalore, India
+alex.rao@example.com · +91 98765 43210
+https://github.com/example · https://example.dev
+
+SUMMARY
+Python backend engineer with 4 years building API platforms, data pipelines,
+and production services on AWS. Comfortable owning design through deploy:
+FastAPI/Django services, PostgreSQL, Redis, Docker, and Kubernetes.
+
+EXPERIENCE
+Senior Backend Engineer — Northwind Labs (2023–present)
+- Led a FastAPI service mesh serving 12M requests/day; dropped p95 latency 40%.
+- Introduced contract tests and pytest fixtures that cut regression escapes in half.
+- Designed PostgreSQL partitioning and Redis caching for billing reads.
+
+Backend Engineer — Deccan Systems (2021–2023)
+- Shipped Django REST modules for inventory and payments used by 80+ operators.
+- Containerized legacy workers with Docker and moved nightly jobs onto AWS batch.
+- Mentored two juniors on code review, observability, and on-call.
+
+SKILLS
+Python, FastAPI, Django, PostgreSQL, Redis, Docker, Kubernetes, AWS, pytest, CI/CD
+
+EDUCATION
+B.Tech, Computer Science — 2021

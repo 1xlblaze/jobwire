@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apply · Practice Python Developer — Jobwire</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <div class="sheet">
+      <p class="kicker"><a href="/">← Back to the wire</a> · Practice form · nothing is submitted</p>
+      <h1>Practice application</h1>
+      <p class="lede">
+        Stand-in for a careers page. Use <strong>Suggest answer</strong> on each
+        field (same API the Chrome extension calls). Review the draft, then
+        insert it. There is no Apply button that sends data anywhere.
+      </p>
+      <form id="practice" onsubmit="return false">
+        <p>
+          <label for="q1">Years of experience in Docker?</label>
+          <input id="q1" name="docker_years" type="text" />
+        </p>
+        <p>
+          <label for="q2">Notice period</label>
+          <input id="q2" name="notice" type="text" />
+        </p>
+        <p>
+          <label for="q3">Expected CTC</label>
+          <input id="q3" name="ctc" type="text" />
+        </p>
+        <p>
+          <label for="q4">Why this role?</label>
+          <textarea id="q4" name="why" rows="4"></textarea>
+        </p>
+      </form>
+    </div>
+    <script>
+      async function draft(question) {
+        const res = await fetch("/api/suggest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            question,
+            job_title: "Practice Python Developer",
+            job_company: "Jobwire Desk",
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Failed");
+        return data.answer;
+      }
+
+      document.querySelectorAll("#practice input, #practice textarea").forEach((field) => {
+        const label = document.querySelector(`label[for="${field.id}"]`);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn";
+        btn.textContent = "Suggest answer";
+        btn.style.marginTop = "6px";
+        btn.addEventListener("click", async () => {
+          btn.disabled = true;
+          btn.textContent = "Drafting…";
+          try {
+            field.value = await draft(label.innerText);
+          } catch (err) {
+            field.value = err.message;
+          } finally {
+            btn.disabled = false;
+            btn.textContent = "Suggest answer";
+          }
+        });
+        field.insertAdjacentElement("afterend", btn);
+      });
+    </script>
+  </body>
+</html>

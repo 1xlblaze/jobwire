@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jobwire — morning edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <div class="sheet">
+      <header class="masthead">
+        <div class="kicker">Local · Public feeds only · No auto-apply</div>
+        <div class="masthead-row">
+          <h1>The Jobwire</h1>
+          <div class="edition">
+            <div id="clock">—</div>
+            <div class="edition-sub">Python openings, last {{ lookback_hours }}h</div>
+          </div>
+        </div>
+        <p class="lede">
+          A classifieds desk for {{ candidate_name }}. New Python roles from
+          public boards land in SQLite; screening answers are drafted from your
+          resume. You still submit every application yourself.
+        </p>
+        <div class="toolbar">
+          <button id="poll-btn" class="btn btn-ink" type="button">Pull the wire</button>
+          <a class="btn" href="/practice">Practice form</a>
+          <span id="poll-status" class="muted">Idle</span>
+          <div class="stats" id="stats-pills"></div>
+        </div>
+      </header>
+
+      <div class="layout">
+        <section class="rail" aria-label="Openings">
+          <div class="filters">
+            <input id="search" type="search" placeholder="Search title or company" />
+            <select id="status-filter">
+              <option value="">All statuses</option>
+              <option value="new">New</option>
+              <option value="saved">Saved</option>
+              <option value="dismissed">Dismissed</option>
+            </select>
+            <select id="source-filter">
+              <option value="">All sources</option>
+              <option value="remoteok">RemoteOK</option>
+              <option value="remotive">Remotive</option>
+              <option value="arbeitnow">Arbeitnow</option>
+              <option value="jobicy">Jobicy</option>
+              <option value="weworkremotely">We Work Remotely</option>
+            </select>
+          </div>
+          <div id="job-list" class="job-list">
+            <div class="empty">Loading the wire…</div>
+          </div>
+        </section>
+
+        <section class="desk" aria-label="Job desk">
+          <article id="job-detail" class="detail empty-detail">
+            <h2>Select an opening</h2>
+            <p>
+              Pull the wire to fetch public Python jobs posted in the last
+              {{ lookback_hours }} hours. Click a listing to read it and draft
+              screening answers against that role.
+            </p>
+          </article>
+        </section>
+      </div>
+
+      <section class="copilot" id="copilot">
+        <div class="copilot-head">
+          <h2>Screening copilot</h2>
+          <p>
+            Heuristics handle CTC, notice period, and years-per-skill. Qualitative
+            prompts use an LLM when <code>OPENAI_API_KEY</code> or
+            <code>GEMINI_API_KEY</code> is set; otherwise a resume template.
+          </p>
+        </div>
+        <form id="suggest-form">
+          <label for="question">Recruiter question</label>
+          <textarea
+            id="question"
+            rows="3"
+            placeholder="Years of experience in Docker? Why this role?"
+            required
+          ></textarea>
+          <div class="copilot-actions">
+            <button class="btn btn-ink" type="submit">Draft answer</button>
+            <button class="btn" id="copy-btn" type="button" disabled>Copy</button>
+            <span id="suggest-meta" class="muted"></span>
+          </div>
+          <pre id="suggest-out" class="answer" hidden></pre>
+          <p id="suggest-error" class="error" hidden></p>
+        </form>
+      </section>
+
+      <footer>
+        <p>
+          Sources: RemoteOK, Remotive, Arbeitnow, Jobicy, We Work Remotely RSS.
+          Jobwire does not log into LinkedIn or Naukri, does not click Apply,
+          and does not store site cookies.
+        </p>
+      </footer>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

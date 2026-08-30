@@ -1,0 +1,28 @@
+.jobwire-btn {
+  font: 11px/1.2 ui-monospace, "IBM Plex Mono", monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid #1b1712;
+  background: #f3ead8;
+  color: #1b1712;
+  padding: 4px 8px;
+  margin: 4px 0 6px;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.jobwire-btn:hover {
+  background: #1b1712;
+  color: #f3ead8;
+}
+
+.jobwire-preview {
+  font: 13px/1.4 Georgia, serif;
+  background: #fffaf0;
+  border: 1px solid #1b1712;
+  color: #1b1712;
+  padding: 8px 10px;
+  margin: 0 0 8px;
+  max-width: 36rem;
+  white-space: pre-wrap;
+}

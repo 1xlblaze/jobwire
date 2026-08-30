@@ -1,0 +1,332 @@
+:root {
+  --paper: #f3ead8;
+  --paper-2: #ebe1cc;
+  --ink: #1b1712;
+  --muted: #6b6256;
+  --rule: #c9bba0;
+  --signal: #9c1c12;
+  --sage: #2f4a38;
+  --brass: #8a6230;
+  --card: #fffaf0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: #3a3329;
+  color: var(--ink);
+  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+}
+
+.sheet {
+  max-width: 1180px;
+  margin: 24px auto 48px;
+  background: var(--paper);
+  border: 1px solid #1b1712;
+  box-shadow: 8px 10px 0 #1b1712;
+  padding: 28px 32px 20px;
+}
+
+.masthead {
+  border-bottom: 3px double var(--ink);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.kicker {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.masthead-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(40px, 7vw, 72px);
+  line-height: 0.9;
+  margin: 8px 0 0;
+  font-weight: 700;
+}
+
+.edition {
+  text-align: right;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+}
+
+.edition-sub {
+  color: var(--muted);
+}
+
+.lede {
+  max-width: 70ch;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+.btn {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-ink {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.kicker a {
+  color: inherit;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.pill {
+  border: 1px solid var(--rule);
+  padding: 4px 8px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  background: var(--paper-2);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--rule);
+  min-height: 480px;
+}
+
+.rail {
+  border-right: 1px solid var(--rule);
+  padding: 12px 16px 16px 0;
+}
+
+.desk {
+  padding: 12px 0 16px 20px;
+}
+
+.filters {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  font: inherit;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink);
+  padding: 8px 10px;
+}
+
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 620px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.job-card {
+  text-align: left;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  padding: 10px 12px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.job-card.active {
+  border-color: var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.job-card .title {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+
+.job-card .meta,
+.detail-meta {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  margin-right: 6px;
+  text-transform: uppercase;
+}
+
+.badge.new {
+  color: var(--signal);
+}
+
+.badge.saved {
+  color: var(--sage);
+}
+
+.empty,
+.empty-detail {
+  color: var(--muted);
+}
+
+.detail h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 32px;
+  margin: 0 0 8px;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+.description {
+  white-space: pre-wrap;
+  line-height: 1.5;
+  max-height: 320px;
+  overflow: auto;
+  border-top: 1px dashed var(--rule);
+  padding-top: 12px;
+}
+
+.copilot {
+  padding-top: 20px;
+}
+
+.copilot-head h2 {
+  font-family: "Fraunces", Georgia, serif;
+  margin: 0 0 6px;
+}
+
+.copilot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.answer {
+  background: var(--card);
+  border: 1px solid var(--ink);
+  padding: 12px 14px;
+  white-space: pre-wrap;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.error {
+  color: var(--signal);
+}
+
+footer {
+  margin-top: 24px;
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+code {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+}
+
+@media (max-width: 840px) {
+  .sheet {
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    padding: 18px 16px 32px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .rail {
+    border-right: none;
+    border-bottom: 1px solid var(--rule);
+    padding-right: 0;
+  }
+
+  .desk {
+    padding-left: 0;
+  }
+
+  .masthead-row {
+    flex-direction: column;
+  }
+
+  .edition {
+    text-align: left;
+  }
+
+  .stats {
+    margin-left: 0;
+  }
+}
