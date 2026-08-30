@@ -19,7 +19,7 @@ body {
   margin: 0;
   background: #3a3329;
   color: var(--ink);
-  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 .sheet {
@@ -38,7 +38,7 @@ body {
 }
 
 .kicker {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -53,7 +53,7 @@ body {
 }
 
 h1 {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(40px, 7vw, 72px);
   line-height: 0.9;
   margin: 8px 0 0;
@@ -62,7 +62,7 @@ h1 {
 
 .edition {
   text-align: right;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
   font-size: 13px;
 }
 
@@ -84,7 +84,7 @@ h1 {
 }
 
 .btn {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -134,7 +134,7 @@ a.btn {
 .pill {
   border: 1px solid var(--rule);
   padding: 4px 8px;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
   font-size: 11px;
   background: var(--paper-2);
 }
@@ -198,14 +198,14 @@ textarea {
 }
 
 .job-card .title {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 18px;
   margin: 0 0 4px;
 }
 
 .job-card .meta,
 .detail-meta {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
   font-size: 11px;
   color: var(--muted);
 }
@@ -230,7 +230,7 @@ textarea {
 }
 
 .detail h2 {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 32px;
   margin: 0 0 8px;
 }
@@ -256,7 +256,7 @@ textarea {
 }
 
 .copilot-head h2 {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   margin: 0 0 6px;
 }
 
@@ -273,7 +273,7 @@ textarea {
   border: 1px solid var(--ink);
   padding: 12px 14px;
   white-space: pre-wrap;
-  font-family: "Source Sans 3", sans-serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
   line-height: 1.45;
 }
@@ -291,7 +291,7 @@ footer {
 }
 
 code {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
   font-size: 12px;
 }
 

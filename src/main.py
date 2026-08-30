@@ -47,7 +47,7 @@ def cmd_serve(poll: bool) -> None:
     app = create_app(config, store, poll=poll)
     host = os.environ.get("JOBWIRE_HOST", config.agent.host)
     port = int(os.environ.get("JOBWIRE_PORT", config.agent.port))
-    uvicorn.run(app, host=host, port=port, log_level="info")
+    uvicorn.run(app, host=host, port=port, log_level="info", proxy_headers=True, forwarded_allow_ips="*")
 
 
 def build_parser() -> argparse.ArgumentParser:

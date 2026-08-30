@@ -68,6 +68,17 @@ def create_app(
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    @app.middleware("http")
+    async def preview_headers(request: Request, call_next):
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Content-Security-Policy"] = (
+            "frame-ancestors *; default-src 'self'; "
+            "script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data:; connect-src 'self'"
+        )
+        return response
     templates = Jinja2Templates(directory=str(APP_DIR / "templates"))
     app.mount("/static", StaticFiles(directory=str(APP_DIR / "static")), name="static")
 
@@ -79,6 +90,8 @@ def create_app(
             {
                 "candidate_name": config.candidate.full_name,
                 "lookback_hours": config.agent.lookback_hours,
+                "jobs": store.list_jobs(limit=50),
+                "stats": store.stats(),
             },
         )
 

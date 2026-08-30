@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 class AgentSettings(BaseModel):
     polling_interval_minutes: int = 60
     lookback_hours: int = 24
-    host: str = "127.0.0.1"
+    host: str = "0.0.0.0"
     port: int = 43141
 
 

@@ -4,13 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Jobwire — morning edition</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="/static/app.css" />
+    <style>
+      html, body { background: #3a3329; color: #1b1712; margin: 0; }
+      .sheet { background: #f3ead8; max-width: 1180px; margin: 24px auto; padding: 28px; }
+    </style>
   </head>
   <body>
     <div class="sheet">
@@ -32,7 +30,10 @@
           <button id="poll-btn" class="btn btn-ink" type="button">Pull the wire</button>
           <a class="btn" href="/practice">Practice form</a>
           <span id="poll-status" class="muted">Idle</span>
-          <div class="stats" id="stats-pills"></div>
+          <div class="stats" id="stats-pills">
+            <span class="pill">total {{ stats.total if stats else 0 }}</span>
+            <span class="pill">new {{ stats.by_status.get('new', 0) if stats else 0 }}</span>
+          </div>
         </div>
       </header>
 
@@ -56,7 +57,19 @@
             </select>
           </div>
           <div id="job-list" class="job-list">
-            <div class="empty">Loading the wire…</div>
+            {% if jobs %}
+              {% for job in jobs %}
+              <button class="job-card" data-id="{{ job.id }}" type="button">
+                <div class="title">{{ job.title }}</div>
+                <div class="meta">
+                  <span class="badge {{ job.status }}">{{ job.status }}</span>
+                  {{ job.company or "Unknown co." }} · {{ job.source }}
+                </div>
+              </button>
+              {% endfor %}
+            {% else %}
+              <div class="empty">The wire is quiet. Click “Pull the wire” to fetch public boards.</div>
+            {% endif %}
           </div>
         </section>
 

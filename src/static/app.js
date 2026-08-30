@@ -48,8 +48,17 @@ function renderStats(stats) {
     .join("");
 }
 
+function bindListClicks() {
+  const root = el("job-list");
+  if (!root) return;
+  root.querySelectorAll(".job-card").forEach((card) => {
+    card.addEventListener("click", () => selectJob(Number(card.dataset.id)));
+  });
+}
+
 function renderList() {
   const root = el("job-list");
+  if (!root) return;
   if (!state.jobs.length) {
     root.innerHTML =
       '<div class="empty">The wire is quiet. Pull public boards, or loosen keywords in config.yaml.</div>';
@@ -67,9 +76,7 @@ function renderList() {
       </button>`;
     })
     .join("");
-  root.querySelectorAll(".job-card").forEach((card) => {
-    card.addEventListener("click", () => selectJob(Number(card.dataset.id)));
-  });
+  bindListClicks();
 }
 
 function escapeHtml(value) {
@@ -147,49 +154,10 @@ async function pullWire() {
   }
 }
 
-el("poll-btn").addEventListener("click", pullWire);
-el("search").addEventListener("input", () => {
-  clearTimeout(el("search")._t);
-  el("search")._t = setTimeout(loadJobs, 180);
-});
-el("status-filter").addEventListener("change", loadJobs);
-el("source-filter").addEventListener("change", loadJobs);
-
-el("suggest-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const question = el("question").value.trim();
-  const out = el("suggest-out");
-  const err = el("suggest-error");
-  const meta = el("suggest-meta");
-  err.hidden = true;
-  try {
-    const body = { question, job_id: state.selectedId };
-    const data = await api("/api/suggest", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-    state.lastAnswer = data.answer;
-    out.hidden = false;
-    out.textContent = data.answer;
-    meta.textContent = `${data.source}${data.provider && data.provider !== "none" ? ` · ${data.provider}` : ""}`;
-    el("copy-btn").disabled = false;
-  } catch (ex) {
-    err.hidden = false;
-    err.textContent = ex.message;
-  }
-});
-
-el("copy-btn").addEventListener("click", async () => {
-  if (!state.lastAnswer) return;
-  await navigator.clipboard.writeText(state.lastAnswer);
-  el("copy-btn").textContent = "Copied";
-  setTimeout(() => {
-    el("copy-btn").textContent = "Copy";
-  }, 1200);
-});
-
 function tickClock() {
-  el("clock").textContent = new Date().toLocaleString(undefined, {
+  const clock = el("clock");
+  if (!clock) return;
+  clock.textContent = new Date().toLocaleString(undefined, {
     weekday: "long",
     month: "short",
     day: "numeric",
@@ -198,8 +166,62 @@ function tickClock() {
   });
 }
 
-tickClock();
-setInterval(tickClock, 30000);
-loadJobs().catch((err) => {
-  el("job-list").innerHTML = `<div class="empty">${escapeHtml(err.message)}</div>`;
-});
+function onReady() {
+  const pollBtn = el("poll-btn");
+  if (pollBtn) pollBtn.addEventListener("click", pullWire);
+  const search = el("search");
+  if (search) {
+    search.addEventListener("input", () => {
+      clearTimeout(search._t);
+      search._t = setTimeout(loadJobs, 180);
+    });
+  }
+  el("status-filter")?.addEventListener("change", loadJobs);
+  el("source-filter")?.addEventListener("change", loadJobs);
+  el("suggest-form")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const question = el("question").value.trim();
+    const out = el("suggest-out");
+    const errBox = el("suggest-error");
+    const meta = el("suggest-meta");
+    errBox.hidden = true;
+    try {
+      const body = { question, job_id: state.selectedId };
+      const data = await api("/api/suggest", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      state.lastAnswer = data.answer;
+      out.hidden = false;
+      out.textContent = data.answer;
+      meta.textContent = `${data.source}${data.provider && data.provider !== "none" ? ` · ${data.provider}` : ""}`;
+      el("copy-btn").disabled = false;
+    } catch (ex) {
+      errBox.hidden = false;
+      errBox.textContent = ex.message;
+    }
+  });
+  el("copy-btn")?.addEventListener("click", async () => {
+    if (!state.lastAnswer) return;
+    await navigator.clipboard.writeText(state.lastAnswer);
+    el("copy-btn").textContent = "Copied";
+    setTimeout(() => {
+      el("copy-btn").textContent = "Copy";
+    }, 1200);
+  });
+  bindListClicks();
+  tickClock();
+  setInterval(tickClock, 30000);
+  loadJobs().catch((err) => {
+    const list = el("job-list");
+    if (list && !list.querySelector(".job-card")) {
+      list.innerHTML = `<div class="empty">${escapeHtml(err.message)}</div>`;
+    }
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", onReady);
+} else {
+  onReady();
+}
