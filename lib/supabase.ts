@@ -1,9 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// Publishable defaults so a Vercel deploy works before project env is set.
+// Override with NEXT_PUBLIC_SUPABASE_* in the Vercel dashboard if you switch projects.
+const url =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  "https://kqolyvmwcsqilnakuewt.supabase.co";
 const key =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  "sb_publishable_DDdH_lpoqNZV4ySChv2IAw_SCDjef5n";
 
 export function getSupabase() {
   if (!url || !key) {
