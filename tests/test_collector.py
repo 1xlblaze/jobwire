@@ -6,6 +6,13 @@ from src.collector import filter_jobs, is_recent, matches_python, strip_html
 def test_matches_python(config):
     assert matches_python("Senior Python Developer", "", [], config.search.keywords)
     assert matches_python("Backend Engineer", "We use FastAPI and Postgres", [], config.search.keywords)
+    assert matches_python("Platform Engineer", "", ["python", "k8s"], config.search.keywords)
+    assert not matches_python(
+        "C++/Kotlin Software Developer",
+        "Experience with Python, Ruby, or Haskell is a plus.",
+        ["Rust Engineering"],
+        config.search.keywords,
+    )
     assert not matches_python("Account Executive", "SaaS sales quota", ["sales"], config.search.keywords)
 
 

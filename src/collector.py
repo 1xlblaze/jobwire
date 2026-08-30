@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import html
 import re
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
@@ -20,6 +21,10 @@ TIMEOUT = httpx.Timeout(20.0, connect=10.0)
 
 PYTHON_RE = re.compile(
     r"\b(python|django|fastapi|flask|pytest|celery|sqlalchemy)\b",
+    re.IGNORECASE,
+)
+BACKEND_TITLE_RE = re.compile(
+    r"\b(backend|back-end|python developer|python engineer)\b",
     re.IGNORECASE,
 )
 
@@ -66,10 +71,17 @@ def is_recent(posted_at: datetime | None, lookback_hours: int) -> bool:
 
 
 def matches_python(title: str, description: str, tags: list[str], keywords: list[str]) -> bool:
-    blob = f"{title} {description} {' '.join(tags)}".lower()
-    if PYTHON_RE.search(blob):
+    """Keep roles that are actually Python/backend, not any listing that mentions Python."""
+    title = title or ""
+    tags_text = " ".join(tags or [])
+    if PYTHON_RE.search(title) or PYTHON_RE.search(tags_text):
         return True
-    return any(kw.lower() in blob for kw in keywords)
+    for kw in keywords:
+        if re.search(rf"\b{re.escape(kw)}\b", title, re.I):
+            return True
+    if BACKEND_TITLE_RE.search(title) and PYTHON_RE.search(description or ""):
+        return True
+    return False
 
 
 def stable_id(*parts: str) -> str:
@@ -78,7 +90,8 @@ def stable_id(*parts: str) -> str:
 
 
 def strip_html(text: str) -> str:
-    cleaned = re.sub(r"<[^>]+>", " ", text or "")
+    cleaned = html.unescape(text or "")
+    cleaned = re.sub(r"<[^>]+>", " ", cleaned)
     cleaned = re.sub(r"\s+", " ", cleaned)
     return cleaned.strip()
 
