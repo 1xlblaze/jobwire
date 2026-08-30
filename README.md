@@ -10,9 +10,7 @@ Jobwire does **not** log in, reuse cookies, or auto-apply. With an `APIFY_TOKEN`
 - Paste a listing URL + description into the ledger
 - Draft screening answers, then apply on the site yourself
 
-Apify MCP in Cursor Desktop can run the same actors interactively. This cloud agent cannot complete Apify OAuth; put the token in `.env.local` / Vercel env instead.
-
-Daily Vercel Cron (Hobby allows once per day) refreshes the free public feeds. Pull the wire still collects on demand, including Apify when `APIFY_TOKEN` is set.
+Apify MCP in Cursor Desktop can run the same actors interactively. Put the token in `.env.local` locally, and in the **jobwire** Vercel project under Settings → Environment Variables (`APIFY_TOKEN`, Production + Preview). Redeploy after saving so **Pull the wire** on https://jobwire.vercel.app can call Apify. The daily Hobby cron only refreshes public feeds (no Apify).
 
 ## Web app (Vercel)
 

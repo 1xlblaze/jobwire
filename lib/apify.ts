@@ -77,9 +77,9 @@ export async function apifyLinkedin(): Promise<RawJob[]> {
     keywords: "Python Developer",
     location: "Bengaluru",
     workType: "any",
-    datePosted: "past_24h",
+    datePosted: "past_week",
     maxResults: MAX_RESULTS,
-    fetchFullDescription: false,
+    fetchFullDescription: true,
   });
   return items.map((item) => ({
     source: "linkedin",
@@ -89,7 +89,12 @@ export async function apifyLinkedin(): Promise<RawJob[]> {
     location: asText(item.location) || "Bengaluru",
     url: asText(item.link || item.url || item.applyUrl),
     description: asText(item.descriptionText || item.description || item.jobDescription),
-    tags: ["linkedin", "apify", "python", ...asText(item.jobFunctions).split(", ").filter(Boolean)],
+    tags: [
+      "linkedin",
+      "apify",
+      ...asText(item.jobFunctions).split(", ").filter(Boolean),
+      ...asText(item.industries).split(", ").filter(Boolean),
+    ],
     posted_at: asIso(item.postedAt || item.publishedAt || item.datePosted) || new Date().toISOString(),
   }));
 }
@@ -98,7 +103,8 @@ export async function apifyNaukri(): Promise<RawJob[]> {
   const items = await runActor(NAUKRI_ACTOR, {
     keyword: "python developer",
     location: "Bangalore",
-    datePosted: "1",
+    datePosted: "3",
+    sortBy: "date",
     maxResults: MAX_RESULTS,
     compact: true,
   });
@@ -109,11 +115,12 @@ export async function apifyNaukri(): Promise<RawJob[]> {
     company: asText(item.companyName || item.company),
     location: asText(item.location) || "Bangalore",
     url: asText(item.portalUrl || item.url || item.jobUrl),
-    description: asText(item.description || item.descriptionText || item.jobDescription),
+    description: asText(
+      item.description || item.descriptionText || item.descriptionSnippet || item.jobDescription,
+    ),
     tags: [
       "naukri",
       "apify",
-      "python",
       ...(Array.isArray(item.skills) ? item.skills.map(asText) : []),
     ],
     posted_at: asIso(item.createdDate || item.postedAt || item.datePosted) || new Date().toISOString(),

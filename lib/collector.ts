@@ -3,6 +3,7 @@ import { getSupabase } from "./supabase";
 const STACK = /\b(python|django|fastapi|flask|pytest|celery|sqlalchemy)\b/i;
 const BACKEND = /\b(backend|back-end|python developer|python engineer)\b/i;
 const LOOKBACK_MS = 24 * 60 * 60 * 1000;
+const BOARD_LOOKBACK_MS = 3 * 24 * 60 * 60 * 1000;
 
 export type RawJob = {
   source: string;
@@ -30,11 +31,11 @@ function isPythonRole(title: string, description: string, tags: string[]) {
   return BACKEND.test(title) && STACK.test(description);
 }
 
-function isRecent(iso: string | null) {
+function isRecent(iso: string | null, windowMs = LOOKBACK_MS) {
   if (!iso) return false;
   const ts = Date.parse(iso);
   if (Number.isNaN(ts)) return false;
-  return Date.now() - ts <= LOOKBACK_MS;
+  return Date.now() - ts <= windowMs;
 }
 
 async function fetchJson(url: string, init?: RequestInit) {
@@ -148,16 +149,18 @@ export type CollectResult = {
 async function ingest(
   name: string,
   fetchSource: () => Promise<RawJob[]>,
+  options: { lookbackMs?: number } = {},
 ): Promise<CollectResult> {
   const supabase = getSupabase();
   const started = new Date().toISOString();
+  const lookbackMs = options.lookbackMs ?? LOOKBACK_MS;
   try {
     const raw = await fetchSource();
     const matched = raw.filter(
       (job) =>
         job.title &&
         isPythonRole(job.title, job.description, job.tags) &&
-        isRecent(job.posted_at),
+        isRecent(job.posted_at, lookbackMs),
     );
     let inserted = 0;
     for (const job of matched) {
@@ -227,8 +230,8 @@ export async function collectAll(options: { apify?: boolean } = {}) {
   }
 
   const apifyResults = await Promise.all([
-    ingest("linkedin", apifyLinkedin),
-    ingest("naukri", apifyNaukri),
+    ingest("linkedin", apifyLinkedin, { lookbackMs: BOARD_LOOKBACK_MS }),
+    ingest("naukri", apifyNaukri, { lookbackMs: BOARD_LOOKBACK_MS }),
   ]);
   return [...publicResults, ...apifyResults];
 }
