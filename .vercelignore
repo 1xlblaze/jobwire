@@ -1,0 +1,15 @@
+.venv
+__pycache__
+database
+*.db
+.pytest_cache
+src
+tests
+extension
+userscript
+*.pyc
+.env
+.env.local
+.next
+node_modules
+.vercel
