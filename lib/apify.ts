@@ -21,7 +21,7 @@ function actorPath(id: string) {
   return encodeURIComponent(id.replace("/", "~"));
 }
 
-function asText(value: unknown) {
+function asText(value: unknown): string {
   if (value == null) return "";
   if (typeof value === "string") return value;
   if (typeof value === "number") return String(value);
