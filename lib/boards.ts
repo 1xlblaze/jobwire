@@ -22,12 +22,12 @@ export const BOARD_SEARCHES: { id: BoardId; label: string; href: string; blurb: 
     id: "linkedin",
     label: "LinkedIn",
     href: linkedinSearchUrl(SEARCH_KEYWORDS[0]),
-    blurb: "Easy Apply, past 24 hours, Bangalore. You apply in LinkedIn; Jobwire only drafts answers.",
+    blurb: "Apify guest search, past 24 hours, Bangalore. You apply in LinkedIn; Jobwire only drafts answers.",
   },
   {
     id: "naukri",
     label: "Naukri",
     href: naukriSearchUrl("python-developer"),
-    blurb: "Python developer jobs in Bangalore posted today. You apply on Naukri; log the listing here.",
+    blurb: "Apify Naukri search in Bangalore posted today. You apply on Naukri; Jobwire only drafts answers.",
   },
 ];

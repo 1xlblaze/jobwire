@@ -4,12 +4,15 @@ Public Python job feeds into **Supabase**, a screening-answer copilot, and a Ver
 
 ## LinkedIn & Naukri
 
-Jobwire does not scrape or auto-apply on those sites. It does:
+Jobwire does **not** log in, reuse cookies, or auto-apply. With an `APIFY_TOKEN`, **Pull the wire** runs cookie-free Apify Store actors (`mfrostbutter/linkedin-jobs-scraper` and `blackfalcondata/naukri-jobs-feed`) and stores matching Python roles. Without a token, those sources are skipped and you can still:
 
-- Open LinkedIn / Naukri search pages for Python roles posted recently
-- Let you paste a listing URL + description into the ledger
-- Draft screening answers for that listing
-- Leave Apply to you (or the Chrome Suggest helper)
+- Open LinkedIn / Naukri search pages
+- Paste a listing URL + description into the ledger
+- Draft screening answers, then apply on the site yourself
+
+Apify MCP in Cursor Desktop can run the same actors interactively. This cloud agent cannot complete Apify OAuth; put the token in `.env.local` / Vercel env instead.
+
+Hourly Vercel Cron only refreshes the free public feeds so Apify usage stays on-demand.
 
 ## Web app (Vercel)
 

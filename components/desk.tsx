@@ -106,16 +106,16 @@ export function Desk({ initialJobs }: { initialJobs: JobRow[] }) {
     <div className="mx-auto max-w-6xl my-6 border border-[#1b1712] bg-[#f3ead8] p-7 text-[#1b1712] shadow-[8px_10px_0_#1b1712]">
       <header className="border-b-[3px] border-double border-[#1b1712] pb-4 mb-5">
         <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9c1c12]">
-          Public feeds + LinkedIn/Naukri search · You apply yourself
+          Public feeds + Apify LinkedIn/Naukri · You apply yourself
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <h1 className="font-serif text-6xl font-bold leading-none mt-2">The Jobwire</h1>
           <div className="font-mono text-sm">Python openings, last 24h</div>
         </div>
         <p className="mt-3 max-w-[70ch] text-[17px] leading-snug">
-          Public Python roles land in Supabase. LinkedIn and Naukri are first-class search
-          destinations: open the live board, paste a listing here, draft answers, then submit on
-          that site yourself. Jobwire does not log in or click Apply.
+          Public Python roles land in Supabase. Pull the wire also runs Apify LinkedIn and Naukri
+          search actors when APIFY_TOKEN is set — no site login, no cookies, no Apply click.
+          You can still open the live board and paste a listing by hand.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Button disabled={busy} onClick={pullWire} className="rounded-none bg-[#1b1712] text-[#f3ead8] uppercase font-mono text-xs">
@@ -137,8 +137,8 @@ export function Desk({ initialJobs }: { initialJobs: JobRow[] }) {
       <section className="border-b border-[#c9bba0] py-5">
         <h2 className="font-serif text-2xl">LinkedIn &amp; Naukri</h2>
         <p className="text-sm text-[#6b6256] max-w-[70ch]">
-          These sites do not offer a public job API we can poll. Open a search, copy a role you
-          want, and log it so the copilot can answer screening questions against that listing.
+          Pull the wire fills these boards through Apify (token required). Search buttons and
+          the paste form stay available if a run is skipped or you want a specific listing.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {BOARD_SEARCHES.map((board) => (

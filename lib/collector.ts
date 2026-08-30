@@ -131,61 +131,104 @@ async function jobicy(): Promise<RawJob[]> {
   }));
 }
 
-const SOURCES: Record<string, () => Promise<RawJob[]>> = {
+const PUBLIC_SOURCES: Record<string, () => Promise<RawJob[]>> = {
   remoteok,
   remotive,
   arbeitnow,
   jobicy,
 };
 
-export async function collectAll() {
+export type CollectResult = {
+  source: string;
+  found: number;
+  inserted: number;
+  error: string | null;
+};
+
+async function ingest(
+  name: string,
+  fetchSource: () => Promise<RawJob[]>,
+): Promise<CollectResult> {
   const supabase = getSupabase();
-  const results = [];
-  for (const [name, fetchSource] of Object.entries(SOURCES)) {
-    const started = new Date().toISOString();
-    try {
-      const raw = await fetchSource();
-      const matched = raw.filter(
-        (job) =>
-          isPythonRole(job.title, job.description, job.tags) && isRecent(job.posted_at),
-      );
-      let inserted = 0;
-      for (const job of matched) {
-        const { error } = await supabase.from("jobwire_jobs").insert({
-          source: job.source,
-          external_id: job.external_id,
-          title: job.title,
-          company: job.company,
-          location: job.location,
-          url: job.url,
-          description: job.description,
-          tags: job.tags,
-          posted_at: job.posted_at,
-          status: "new",
-        });
-        if (!error) inserted += 1;
-      }
-      await supabase.from("jobwire_fetch_runs").insert({
-        source: name,
-        started_at: started,
-        finished_at: new Date().toISOString(),
-        jobs_found: matched.length,
-        jobs_inserted: inserted,
-        error: null,
+  const started = new Date().toISOString();
+  try {
+    const raw = await fetchSource();
+    const matched = raw.filter(
+      (job) =>
+        job.title &&
+        isPythonRole(job.title, job.description, job.tags) &&
+        isRecent(job.posted_at),
+    );
+    let inserted = 0;
+    for (const job of matched) {
+      const { error } = await supabase.from("jobwire_jobs").insert({
+        source: job.source,
+        external_id: job.external_id,
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        url: job.url,
+        description: job.description,
+        tags: job.tags,
+        posted_at: job.posted_at,
+        status: "new",
       });
-      results.push({ source: name, found: matched.length, inserted, error: null });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      await supabase.from("jobwire_fetch_runs").insert({
-        source: name,
-        started_at: started,
-        finished_at: new Date().toISOString(),
-        jobs_found: 0,
-        jobs_inserted: 0,
-        error: message,
-      });
-      results.push({ source: name, found: 0, inserted: 0, error: message });
+      if (!error) inserted += 1;
     }
+    await supabase.from("jobwire_fetch_runs").insert({
+      source: name,
+      started_at: started,
+      finished_at: new Date().toISOString(),
+      jobs_found: matched.length,
+      jobs_inserted: inserted,
+      error: null,
+    });
+    return { source: name, found: matched.length, inserted, error: null };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    await supabase.from("jobwire_fetch_runs").insert({
+      source: name,
+      started_at: started,
+      finished_at: new Date().toISOString(),
+      jobs_found: 0,
+      jobs_inserted: 0,
+      error: message,
+    });
+    return { source: name, found: 0, inserted: 0, error: message };
   }
-  return results;
+}
+
+export async function collectAll(options: { apify?: boolean } = {}) {
+  const publicResults = await Promise.all(
+    Object.entries(PUBLIC_SOURCES).map(([name, fetchSource]) => ingest(name, fetchSource)),
+  );
+
+  if (!options.apify) {
+    return publicResults;
+  }
+
+  const { apifyLinkedin, apifyNaukri, getApifyToken } = await import("./apify");
+  if (!getApifyToken()) {
+    return [
+      ...publicResults,
+      {
+        source: "linkedin",
+        found: 0,
+        inserted: 0,
+        error: "Set APIFY_TOKEN to pull LinkedIn via Apify",
+      },
+      {
+        source: "naukri",
+        found: 0,
+        inserted: 0,
+        error: "Set APIFY_TOKEN to pull Naukri via Apify",
+      },
+    ];
+  }
+
+  const apifyResults = await Promise.all([
+    ingest("linkedin", apifyLinkedin),
+    ingest("naukri", apifyNaukri),
+  ]);
+  return [...publicResults, ...apifyResults];
 }
