@@ -4,7 +4,12 @@ Public Python job feeds into **Supabase**, a screening-answer copilot, and a Ver
 
 ## LinkedIn & Naukri
 
-Those platforms are intentionally absent. Jobwire only reads **public** boards (RemoteOK, Remotive, Arbeitnow, Jobicy). There is no session reuse, Easy Apply automation, or anti-bot layer.
+Jobwire does not scrape or auto-apply on those sites. It does:
+
+- Open LinkedIn / Naukri search pages for Python roles posted recently
+- Let you paste a listing URL + description into the ledger
+- Draft screening answers for that listing
+- Leave Apply to you (or the Chrome Suggest helper)
 
 ## Web app (Vercel)
 

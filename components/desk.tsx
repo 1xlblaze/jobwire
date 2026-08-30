@@ -1,5 +1,6 @@
 "use client";
 
+import { BOARD_SEARCHES } from "@/lib/boards";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,6 +19,15 @@ export function Desk({ initialJobs }: { initialJobs: JobRow[] }) {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [meta, setMeta] = useState("");
+  const [manual, setManual] = useState({
+    source: "linkedin",
+    title: "",
+    company: "",
+    url: "",
+    description: "",
+    applied: false,
+  });
+  const [manualMsg, setManualMsg] = useState("");
 
   const visible = useMemo(() => {
     return jobs.filter((job) => {
@@ -61,6 +71,25 @@ export function Desk({ initialJobs }: { initialJobs: JobRow[] }) {
     setJobs((current) => current.map((job) => (job.id === id ? { ...job, status: updated.status } : job)));
   }
 
+  async function logBoardListing(event: React.FormEvent) {
+    event.preventDefault();
+    setManualMsg("");
+    const res = await fetch("/api/jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(manual),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setManualMsg(data.detail || "Could not save listing");
+      return;
+    }
+    setJobs((current) => [data, ...current]);
+    setSelectedId(data.id);
+    setManualMsg(`Logged on ${data.source}. Use the copilot, then apply on the site yourself.`);
+    setManual((current) => ({ ...current, title: "", company: "", url: "", description: "" }));
+  }
+
   async function draft(event: React.FormEvent) {
     event.preventDefault();
     const res = await fetch("/api/suggest", {
@@ -77,15 +106,16 @@ export function Desk({ initialJobs }: { initialJobs: JobRow[] }) {
     <div className="mx-auto max-w-6xl my-6 border border-[#1b1712] bg-[#f3ead8] p-7 text-[#1b1712] shadow-[8px_10px_0_#1b1712]">
       <header className="border-b-[3px] border-double border-[#1b1712] pb-4 mb-5">
         <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9c1c12]">
-          Public feeds only · No LinkedIn/Naukri auto-apply
+          Public feeds + LinkedIn/Naukri search · You apply yourself
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <h1 className="font-serif text-6xl font-bold leading-none mt-2">The Jobwire</h1>
           <div className="font-mono text-sm">Python openings, last 24h</div>
         </div>
         <p className="mt-3 max-w-[70ch] text-[17px] leading-snug">
-          Public Python roles land in Supabase. Screening answers are drafted from the local
-          profile. You still submit every application yourself.
+          Public Python roles land in Supabase. LinkedIn and Naukri are first-class search
+          destinations: open the live board, paste a listing here, draft answers, then submit on
+          that site yourself. Jobwire does not log in or click Apply.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Button disabled={busy} onClick={pullWire} className="rounded-none bg-[#1b1712] text-[#f3ead8] uppercase font-mono text-xs">
@@ -104,6 +134,81 @@ export function Desk({ initialJobs }: { initialJobs: JobRow[] }) {
         </div>
       </header>
 
+      <section className="border-b border-[#c9bba0] py-5">
+        <h2 className="font-serif text-2xl">LinkedIn &amp; Naukri</h2>
+        <p className="text-sm text-[#6b6256] max-w-[70ch]">
+          These sites do not offer a public job API we can poll. Open a search, copy a role you
+          want, and log it so the copilot can answer screening questions against that listing.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {BOARD_SEARCHES.map((board) => (
+            <Button key={board.id} asChild className="rounded-none bg-[#1b1712] text-[#f3ead8] uppercase font-mono text-xs">
+              <a href={board.href} target="_blank" rel="noreferrer">
+                Search {board.label}
+              </a>
+            </Button>
+          ))}
+        </div>
+        <ul className="mt-2 text-sm text-[#6b6256]">
+          {BOARD_SEARCHES.map((board) => (
+            <li key={board.id}>
+              <strong className="text-[#1b1712]">{board.label}:</strong> {board.blurb}
+            </li>
+          ))}
+        </ul>
+        <form className="mt-4 grid gap-2 md:grid-cols-2" onSubmit={logBoardListing}>
+          <select
+            className="border border-[#c9bba0] bg-[#fffaf0] p-2"
+            value={manual.source}
+            onChange={(e) => setManual((c) => ({ ...c, source: e.target.value }))}
+          >
+            <option value="linkedin">LinkedIn</option>
+            <option value="naukri">Naukri</option>
+          </select>
+          <Input
+            required
+            placeholder="Job title"
+            value={manual.title}
+            onChange={(e) => setManual((c) => ({ ...c, title: e.target.value }))}
+            className="rounded-none bg-[#fffaf0] border-[#c9bba0]"
+          />
+          <Input
+            placeholder="Company"
+            value={manual.company}
+            onChange={(e) => setManual((c) => ({ ...c, company: e.target.value }))}
+            className="rounded-none bg-[#fffaf0] border-[#c9bba0]"
+          />
+          <Input
+            required
+            type="url"
+            placeholder="https://www.linkedin.com/jobs/view/… or naukri.com listing"
+            value={manual.url}
+            onChange={(e) => setManual((c) => ({ ...c, url: e.target.value }))}
+            className="rounded-none bg-[#fffaf0] border-[#c9bba0] md:col-span-2"
+          />
+          <Textarea
+            placeholder="Paste the job description (for screening drafts)"
+            value={manual.description}
+            onChange={(e) => setManual((c) => ({ ...c, description: e.target.value }))}
+            className="rounded-none bg-[#fffaf0] border-[#c9bba0] md:col-span-2"
+          />
+          <label className="flex items-center gap-2 text-sm md:col-span-2">
+            <input
+              type="checkbox"
+              checked={manual.applied}
+              onChange={(e) => setManual((c) => ({ ...c, applied: e.target.checked }))}
+            />
+            I already applied on the site
+          </label>
+          <div className="md:col-span-2">
+            <Button type="submit" className="rounded-none bg-[#1b1712] text-[#f3ead8] uppercase font-mono text-xs">
+              Log listing
+            </Button>
+            {manualMsg ? <span className="ml-3 text-sm text-[#6b6256]">{manualMsg}</span> : null}
+          </div>
+        </form>
+      </section>
+
       <div className="grid gap-5 border-b border-[#c9bba0] pb-5 md:grid-cols-[360px_1fr]">
         <section>
           <div className="mb-3 grid gap-2">
@@ -120,6 +225,8 @@ export function Desk({ initialJobs }: { initialJobs: JobRow[] }) {
               <option value="remotive">Remotive</option>
               <option value="arbeitnow">Arbeitnow</option>
               <option value="jobicy">Jobicy</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="naukri">Naukri</option>
             </select>
           </div>
           <div className="flex max-h-[620px] flex-col gap-2 overflow-auto">
