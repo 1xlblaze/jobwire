@@ -7,8 +7,13 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .env
+.env.local
 database/*.db
 database/*.db-journal
 *.log
 .DS_Store
 extension/.env
+node_modules/
+.next/
+out/
+web/
